@@ -18,7 +18,7 @@ RUN npm run build
 FROM nginxinc/nginx-unprivileged:alpine
 
 # Copiamos los archivos estáticos compilados a la carpeta de Nginx
-COPY --from=builder /app/build /usr/share/nginx/html
+COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Exponemos el puerto 8080
 EXPOSE 80
