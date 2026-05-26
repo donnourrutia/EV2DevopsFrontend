@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instalamos dependencias
-RUN npm ci
+RUN npm install
 
 # Copiamos el resto del código y construimos la app de React
 COPY . .
@@ -21,4 +21,4 @@ FROM nginxinc/nginx-unprivileged:alpine
 COPY --from=builder /app/build /usr/share/nginx/html
 
 # Exponemos el puerto 8080
-EXPOSE 8080
+EXPOSE 80
