@@ -27,6 +27,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build, tag, y push de la imagen Docker a ECR
+        working-directory: ./front_despacho
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: frontendinnovatech 
@@ -34,6 +35,7 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        
 
   deploy-to-ec2:
     name: Despliegue en EC2 (Frontend Público)
@@ -55,3 +57,4 @@ jobs:
             docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/mi-repo-frontend:latest
             
             docker run -d --name app-frontend -p 80:80 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/mi-repo-frontend:latest
+
