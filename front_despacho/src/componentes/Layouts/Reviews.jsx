@@ -1,5 +1,5 @@
 import imagenapple from '../../assets/images/imagen apple.png'
-import imagenhyper from '../../assets/images/imagen hyper.png'
+import imagenhyper from '../../assets/images/imagen hyperx.png'
 import imagenlogitech from '../../assets/images/imagen logitech.png'
 function Reviews() {
   return (
