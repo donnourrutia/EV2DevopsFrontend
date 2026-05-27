@@ -32,6 +32,7 @@ jobs:
           sed -i "s/__IP_DESPACHO__/${{ secrets.IP_DESPACHO }}/g" nginx.conf
 
       - name: Build, tag, y push de la imagen Docker a ECR
+        working-directory: ./front_despacho
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: frontendinnovatech 
