@@ -1,11 +1,9 @@
 name: CI/CD Pipeline Frontend a AWS EC2 via ECR
 
-
 on:
   push:
     branches:
       - deploy
-
 
 jobs:
   build-and-push:
@@ -13,38 +11,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout del repositorio
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v4
 
       - name: Configurar Credenciales de AWS
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-
       - name: Iniciar sesión en Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
-
-      - name: Inyectar IPs de Secrets en nginx.conf *
+      - name: Inyectar IPs de Secrets en nginx.conf
         working-directory: ./front_despacho
         run: |
-          sed -i "s/__IP_VENTAS__/${{ secrets.IP_VENTAS}}/g" nginc.conf
-          sed -i "s/__IP_DESPACHO__/${{ secrets.IP_DESPACHO}}/g" nginc.conf
-
+          sed -i "s/__IP_VENTAS__/${{ secrets.IP_VENTAS }}/g" nginx.conf
+          sed -i "s/__IP_DESPACHO__/${{ secrets.IP_DESPACHO }}/g" nginx.conf
 
       - name: Build, tag, y push de la imagen Docker a ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: EV2DevopsFrontend
+          ECR_REPOSITORY: EV2DevopsFrontend 
           IMAGE_TAG: latest
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
 
   deploy-to-ec2:
     name: Despliegue en EC2 (Frontend Público)
@@ -52,17 +45,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ejecutar despliegue automático en la instancia EC2
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.FRONTEND_PUBLIC_IP }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.AWS_PRIVATE_KEY }}
           script: |
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
-           
+            
             docker stop app-frontend || true
             docker rm app-frontend || true
-           
-            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/mi-repo-frontend:latest
-           
-            docker run -d --name app-frontend -p 80:80 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/mi-repo-frontend:latest
+            
+            docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/EV2DevopsFrontend:latest
+            
+            docker run -d --name app-frontend -p 80:80 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/EV2DevopsFrontend:latest
