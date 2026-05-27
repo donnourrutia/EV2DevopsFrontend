@@ -1,6 +1,6 @@
-import imagenapple from "C:\Users\Donno\Downloads\imagen apple.png"
-import imagenhyper from "C:\Users\Donno\Downloads\imagen hyper.png"
-import imagenlogitech from "C:\Users\Donno\Downloads\imagen logitech.png"
+import imagenapple from '../../assets/images/imagen apple.png'
+import imagenhyper from '../../assets/images/imagen hyper.png'
+import imagenlogitech from '../../assets/images/imagen logitech.png'
 function Reviews() {
   return (
     <div className="bg-white  sm:py-10">
