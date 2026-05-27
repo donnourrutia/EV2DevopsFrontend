@@ -8,6 +8,7 @@ export const FormCierreDespacho = ({ despacho, onClose }) => {
   const onSubmit = async (data) => {
     console.log("onSubmit ejecutado");
     const jsonData = {
+      ...despecho,
       intento: data.intento,
       despachado: data.despachado,
     };
