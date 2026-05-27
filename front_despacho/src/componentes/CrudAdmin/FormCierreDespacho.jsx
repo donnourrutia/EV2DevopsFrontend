@@ -8,6 +8,7 @@ export const FormCierreDespacho = ({ despacho, onClose }) => {
   const onSubmit = async (data) => {
     console.log("onSubmit ejecutado");
     const jsonData = {
+      ...despacho,
       intento: data.intento,
       despachado: data.despachado,
     };
@@ -16,7 +17,7 @@ export const FormCierreDespacho = ({ despacho, onClose }) => {
 
     try {
       await axios.put(
-        `http://192.168.320/api/v1/despachos/${despacho.idDespacho}`,
+        `/api/v1/despachos/${despacho.idDespacho}`,
         jsonData,
         {
           headers:{

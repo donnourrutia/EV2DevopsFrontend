@@ -17,8 +17,12 @@ RUN npm run build
 # Usamos una imagen de Nginx "unprivileged" (no root)
 FROM nginxinc/nginx-unprivileged:alpine
 
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Copiamos los archivos estáticos compilados a la carpeta de Nginx
 COPY --from=builder /app/build /usr/share/nginx/html
 
 # Exponemos el puerto 8080
-EXPOSE 8080
+EXPOSE 80
+
+CMD [ "nginx","-g","deamon off;" ]
