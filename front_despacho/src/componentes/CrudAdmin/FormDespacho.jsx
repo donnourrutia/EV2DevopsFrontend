@@ -7,6 +7,8 @@ export const FormDespacho = ({ venta, onClose }) => {
 
   const onSubmit = async (data) => {
     console.log("onSubmit ejecutado");
+    
+    // Datos para el futuro microservicio de Despachos
     const jsonData = {
       fechaDespacho: data.fechaDespacho,
       patenteCamion: data.patenteCamion,
@@ -17,13 +19,17 @@ export const FormDespacho = ({ venta, onClose }) => {
       valorCompra: venta.valorCompra,
     };
 
+    // Datos para actualizar la Venta (DEBE incluir todos los campos originales para pasar el @Valid de Spring Boot)
     const jsonDataSales = {
+      ...venta,
       despachoGenerado: true,
     };
 
-    console.log("Datos del formulario:", jsonData);
+    console.log("Datos del formulario para despachos:", jsonData);
+    console.log("Datos para actualizar venta:", jsonDataSales);
 
     try {
+      // 1. Actualizamos la venta para que desaparezca de la tabla principal
       await axios.put(
         `/api/v1/ventas/${venta.idVenta}`,
         jsonDataSales,
@@ -31,26 +37,42 @@ export const FormDespacho = ({ venta, onClose }) => {
           headers:{
             'Content-Type': 'application/json',
             'Accept': 'application/json'
-      }
+          }
         }
       );
+
+      // 2. POST a Despachos (COMENTADO TEMPORALMENTE HASTA LEVANTAR EL MICROSERVICIO)
+      /*
       await axios.post("/api/v1/despachos", jsonData, {
         headers:{
           'Content-Type': 'application/json',
           'Accept': 'application/json'
-    }
+        }
       });
+      */
+
+      // 3. Mostramos la alerta de éxito
       Swal.fire({
         title: "Despacho registrado 🛻!",
-        text: "El despacho ha sido generado con éxito en la base de datos",
+        text: "La orden ha sido actualizada con éxito.",
         icon: "success",
         confirmButtonText: "Aceptar",
       });
+
+      // 4. Cerramos el modal (esto ejecuta compras() y refresca la tabla)
+      onClose();
+
     } catch (error) {
       console.error("Error en la solicitud:", error);
+      Swal.fire({
+        title: "Error",
+        text: "Hubo un problema al conectar con el servidor.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
     }
-    onClose();
   };
+
   return (
     <>
       <form
@@ -109,7 +131,7 @@ export const FormDespacho = ({ venta, onClose }) => {
         </div>
 
         <button
-          className="py-6 px-14 rounded-lg bg-teal-600 text-white font-bold mb-14"
+          className="py-6 px-14 rounded-lg bg-teal-600 text-white font-bold mb-14 hover:bg-teal-700 transition-colors"
           type="submit"
         >
           Asignar despacho
