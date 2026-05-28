@@ -6,14 +6,14 @@ WORKDIR /app
 # Copiamos archivos
 COPY package*.json ./
 
-# Instalamos dependencias y nos aseguramos de que los binarios tengan permisos
-RUN npm install && \
-    chmod -R 777 node_modules/.bin
+# Instalación limpia
+RUN npm install
 
+# Copiamos el resto
 COPY . .
 
-# Ejecutamos el build, forzando la ruta del binario
-RUN ./node_modules/.bin/vite build
+# EJECUCIÓN DIRECTA A TRAVÉS DE NPX (Esto salta cualquier problema de permisos de ./node_modules/.bin/vite)
+RUN npx vite build
 
 # Etapa 2: Servidor de producción
 FROM nginx:alpine
