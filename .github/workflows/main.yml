@@ -57,7 +57,7 @@ jobs:
             
             docker stop app-frontend || true
             docker rm app-frontend || true
-            
+             
             docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/frontendinnovatech:latest
             
               docker run -d --name app-frontend -p 80:80 ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/frontendinnovatech:latest
