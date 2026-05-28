@@ -42,14 +42,13 @@ export const FormDespacho = ({ venta, onClose }) => {
       );
 
       // 2. POST a Despachos (COMENTADO TEMPORALMENTE HASTA LEVANTAR EL MICROSERVICIO)
-      /*
       await axios.post("/api/v1/despachos", jsonData, {
         headers:{
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         }
       });
-      */
+      
 
       // 3. Mostramos la alerta de éxito
       Swal.fire({
